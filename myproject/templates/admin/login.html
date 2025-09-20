@@ -1,0 +1,131 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block title %}Login to Admin Panel{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static "admin/css/login.css" %}">
+<link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.1/Vazirmatn-font-face.css" rel="stylesheet">
+<style>
+    body.login {
+        font-family: "Vazirmatn", Tahoma, sans-serif;
+        background-color: #f8f9fa;
+        direction: ltr; /* پیش‌فرض چپ‌چین */
+        text-align: left;
+    }
+    body.login.rtl {
+        direction: rtl; /* برای فارسی */
+        text-align: right;
+    }
+    .submit-row input {
+        background-color: #1d3557;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+    }
+    .submit-row input:hover {
+        background-color: #457b9d;
+    }
+    .form-row label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: bold;
+    }
+    .form-row input {
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .password-reset-link {
+        margin-top: 10px;
+        text-align: right;
+    }
+    .language-select {
+        text-align: right;
+        margin-bottom: 15px;
+    }
+</style>
+
+<script>
+    // بررسی زبان فعلی و اضافه کردن کلاس RTL
+    document.addEventListener('DOMContentLoaded', function() {
+        const langCode = "{{ LANGUAGE_CODE }}";
+        if(langCode === 'fa') {
+            document.body.classList.add('rtl');
+        }
+    });
+</script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+{% block usertools %}{% endblock %}
+{% block nav-global %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block content_title %}{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h2 style="text-align:center; margin-bottom: 20px;">
+        {% if LANGUAGE_CODE == 'fa' %}ورود به پنل مدیریت{% else %}Login to Admin Panel{% endif %}
+    </h2>
+
+    <!-- Language selector -->
+    <div class="language-select">
+        <form action="{% url 'set_language' %}" method="post">
+            {% csrf_token %}
+            <select name="language" onchange="this.form.submit()">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% for lang_code, lang_name in LANGUAGES %}
+                    <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>
+                        {{ lang_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if form.errors %}
+    <p class="errornote">
+        {% if LANGUAGE_CODE == 'fa' %}
+            لطفاً خطاهای زیر را اصلاح کنید.
+        {% else %}
+            Please correct the errors below.
+        {% endif %}
+    </p>
+    {% endif %}
+
+    <form action="{{ app_path }}" method="post" id="login-form">
+        {% csrf_token %}
+        <div class="form-row">
+            {{ form.username.errors }}
+            <label for="id_username">{% if LANGUAGE_CODE == 'fa' %}نام کاربری:{% else %}Username:{% endif %}</label>
+            {{ form.username }}
+        </div>
+        <div class="form-row">
+            {{ form.password.errors }}
+            <label for="id_password">{% if LANGUAGE_CODE == 'fa' %}کلمه عبور:{% else %}Password:{% endif %}</label>
+            {{ form.password }}
+            <input type="hidden" name="next" value="{{ next }}">
+        </div>
+
+        {% url 'admin_password_reset' as password_reset_url %}
+        {% if password_reset_url %}
+        <div class="password-reset-link">
+            <a href="{{ password_reset_url }}">
+                {% if LANGUAGE_CODE == 'fa' %}فراموشی رمز عبور؟{% else %}Forgot password?{% endif %}
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="submit-row">
+            <input type="submit" value="{% if LANGUAGE_CODE == 'fa' %}ورود{% else %}Login{% endif %}">
+        </div>
+    </form>
+</div>
+{% endblock %}

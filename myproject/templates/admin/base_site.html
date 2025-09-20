@@ -1,0 +1,86 @@
+{% extends "admin/base.html" %}
+{% load static i18n %}
+
+{% block title %}
+{% if LANGUAGE_CODE == 'fa' %}پنل مدیریت من{% else %}My Admin Panel{% endif %}
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.0.1/Vazirmatn-font-face.css" rel="stylesheet">
+<style>
+    body {
+        font-family: "Vazirmatn", Tahoma, sans-serif;
+        background-color: #f8f9fa;
+    }
+    body.rtl {
+        direction: rtl;
+        text-align: right;
+    }
+    #header {
+        background: #1d3557;
+        padding: 10px;
+        color: white;
+        text-align: right;
+    }
+    #header h1 a {
+        font-family: "Vazirmatn", Tahoma, sans-serif;
+        font-size: 22px;
+        font-weight: bold;
+        color: #f1faee !important;
+        text-decoration: none;
+    }
+    #user-tools {
+        float: left;
+        margin-left: 10px;
+    }
+    .module h2 {
+        background: #457b9d;
+        color: #fff;
+        padding: 8px;
+        border-radius: 6px;
+    }
+    .dashboard #content-main {
+        text-align: right;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const langCode = "{{ LANGUAGE_CODE }}";
+        if(langCode === 'fa') {
+            document.body.classList.add('rtl');
+        }
+    });
+</script>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        {% if LANGUAGE_CODE == 'fa' %}
+            پنل مدیریت من
+        {% else %}
+            My Admin Panel
+        {% endif %}
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block content %}
+<div id="content-main" class="{% if LANGUAGE_CODE == 'fa' %}rtl{% endif %}">
+    <h2 style="margin-bottom:20px;">
+        {% if LANGUAGE_CODE == 'fa' %}
+            {% if block.super %}{{ block.super }}{% else %}به داشبورد خوش آمدید{% endif %}
+        {% else %}
+            {% if block.super %}{{ block.super }}{% else %}Welcome to the Dashboard{% endif %}
+        {% endif %}
+    </h2>
+
+    {% block dashboard_content %}
+    {# اینجا می‌تونی محتوای داشبورد مثل کاربران آنلاین و نمودارها اضافه کنی #}
+    {% endblock %}
+</div>
+{% endblock %}
