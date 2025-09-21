@@ -20,7 +20,7 @@ project-root/
 │── manage.py
 │── requirements.txt
 │── README.md
-│── my_site/                # Main app (views, models, templates, static files)
+│── myproject/                # Main app (views, models, templates, static files)
 │   ├── migrations/
 │   ├── templates/
 │   ├── static/
